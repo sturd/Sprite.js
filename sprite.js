@@ -1,9 +1,36 @@
-//
-//	2D game sprite class, written by Craig Sturdy
-//
+/* Sprite.js - Simple 2D Sprite Object for Javascript and Canvas
+ *
+ * Copyright (C) 2010 Craig Sturdy
+ *
+ * Email: craig <at> sturd <dot> co <dot> uk
+ * Example Usage: http://www.sturd.co.uk/sonicjs/
+ *
+ * Sprite.js is the legal property of its developers, whose names
+ * are too numerous to list here. Please refer to the COPYRIGHT
+ * file distributed with this source distribution.
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+ *
+ */
 
 var SPRT_IMG_LD = 0;	// Number of sprite images pre-loaded
 var NUM_SPRITES = 0;	// Number of sprites initialised
+
+
+// Code is functional, though as of 09/09/2010 still needs
+// some tinkering in order to function as a stand alone object
 
 function Sprite( imgPath, x, y, width, height, frames )
 {
@@ -54,7 +81,7 @@ function Sprite( imgPath, x, y, width, height, frames )
 
 		// Update sprite position based on state of
 		// velocities.  Subtract screen position from
-		// xPosition to give scrolling effect.
+		// xPosition to allow scrolling effect.
 		this.xPos += Math.round( this.xVel ) - scrVel ;
 		this.yPos += Math.round( this.yVel );
 
