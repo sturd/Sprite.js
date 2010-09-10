@@ -25,34 +25,44 @@
  *
  */
 
+// A little global counter for comparing initialised sprite objects, with
+// the number of images loaded into the objects.
+// I used it for showing a loading screen
+
 var SPRT_IMG_LD = 0;	// Number of sprite images pre-loaded
 var NUM_SPRITES = 0;	// Number of sprites initialised
 
-
-// Code is functional, though as of 09/09/2010 still needs
-// some tinkering in order to function as a stand alone object
-
-function Sprite( imgPath, x, y, width, height, frames )
+/* Argument list
+ *
+ * canvasID	- Canvas DOM reference, for attaching a context
+ * imgPath	- Path of image on server for use as sprite animation
+ * x, y		- Coordinates of sprite to be drawn on the canvas
+ * height, width- Height and width of individual frames on the canvas
+ * frames	- Number of frames in the initial state of the sprite
+ */
+function Sprite( canvasID, imgPath, x, y, width, height, frames )
 {
-	this.img = new Image();
+	var cnvs_cxt = document.getElementById( canvasID ).getContext( '2d' );
+	var img = new Image();
 
-	// When the image loads
-	this.img.onload = function()
-	{	++SPRT_IMG_LD;	 }
+	++NUM_SPRITES;	// Iterate number of sprites when loading
+
+	// Iterate the loaded images counter when the image
+	// finishes downloading
+	img.onload = function()
+	{    ++SPRT_IMG_LD;    }
 	
-	this.img.src = imgPath;
+	img.src = imgPath;
 
-	this.Fi = 0;
+	var Fi = 0;
 
-	this.xPos = x; this.yPos = y;
+	var xPos = x; yPos = y;
 	this.xVel = 0; this.yVel = 0;
 
 	this.numFrames = frames;
 	this.width = width;
 	this.height = height;
 	this.FrameWidth = this.width / this.numFrames;
-
-	++NUM_SPRITES;	// Iterate number of sprites when loading
 
 	this.state = 0;
 	this.direction = RIGHT;
@@ -65,33 +75,58 @@ function Sprite( imgPath, x, y, width, height, frames )
 	// Function to draw and animate sprite
 	this.printSprite = function( scrVel )
 	{
-		if( this.Fi == this.numFrames )
-			this.Fi = 0;
+		if( Fi == this.numFrames )
+			Fi = 0;
 
 		// Calculate position of current frame on spritemap depending upon state
 		// and current frame to be drawn
 		var currentFrame = ( this.FrameWidth * this.numFrames * this.direction ) +
-						   ( this.Fi * this.FrameWidth );
+						   ( Fi * this.FrameWidth );
 
-		cnvCxt.drawImage( this.img, currentFrame,
-				  this.state * this.height,
-				  this.FrameWidth, this.height,
-				  this.xPos, this.yPos,
-				  this.FrameWidth, this.height );
+		cnvs_cxt.drawImage( img, currentFrame,
+				    this.state * this.height,
+				    this.FrameWidth, this.height,
+				    xPos, yPos,
+				    this.FrameWidth, this.height );
 
 		// Update sprite position based on state of
 		// velocities.  Subtract screen position from
 		// xPosition to allow scrolling effect.
-		this.xPos += Math.round( this.xVel ) - scrVel ;
-		this.yPos += Math.round( this.yVel );
+		xPos += Math.round( this.xVel ) - scrVel ;
+		yPos += Math.round( this.yVel );
 
 		if( this.delayCount >= this.frameDelay )
 		{
 			this.delayCount = 0;
-			++this.Fi;
+			++Fi;
 		}
 		else
 			++this.delayCount;
+	}
+
+	// Function to alter state of the sprite
+	this.setState = function( newState, frameCount )
+	{
+		if( this.state != newState )
+		{
+			this.state = newState;
+			this.numFrames = frameCount;
+			Fi = 0;
+		}
+	}
+
+	this.getXPos = function()
+	{
+		return xPos;
+	}
+	this.getYPos = function()
+	{
+		return yPos;
+	}
+
+	this.setYPos = function( y )
+	{
+		yPos = y;
 	}
 }
 
